@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Happy New Year 2026</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      position: absolute;
+      top: 40%;
+      width: 100%;
+      text-align: center;
+      font-size: 3em;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎆 Happy New Year 2026 🎆</h1>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.onresize = resize;
+
+    let fireworks = [];
+
+    function Firework(x, y) {
+      this.x = x;
+      this.y = y;
+      this.particles = [];
+      for (let i = 0; i < 50; i++) {
+        this.particles.push({
+          x: x,
+          y: y,
+          angle: Math.random() * Math.PI * 2,
+          speed: Math.random() * 4 + 2,
+          life: 60
+        });
+      }
+    }
+
+    function drawFireworks() {
+      ctx.fillStyle = "rgba(0,0,0,0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      fireworks.forEach((fw, index) => {
+        fw.particles.forEach(p => {
+          p.x += Math.cos(p.angle) * p.speed;
+          p.y += Math.sin(p.angle) * p.speed;
+          p.life--;
+
+          ctx.fillStyle = "hsl(" + Math.random() * 360 + ",100%,50%)";
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        fw.particles = fw.particles.filter(p => p.life > 0);
+        if (fw.particles.length === 0) fireworks.splice(index, 1);
+      });
+
+      requestAnimationFrame(drawFireworks);
+    }
+
+    setInterval(() => {
+      fireworks.push(new Firework(
+        Math.random() * canvas.width,
+        Math.random() * canvas.height
+      ));
+    }, 500);
+
+    drawFireworks();
+  </script>
+</body>
+</html>
